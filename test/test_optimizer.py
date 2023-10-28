@@ -1,16 +1,15 @@
+from diffmat.core.util import FILTER_OFF
+from diffmat.core.io import read_image
+from diffmat.optim.metric import METRIC_DICT
+from diffmat.optim import Optimizer
+from diffmat import MaterialGraphTranslator as MGT, config_logger
+import torch as th
+from torch.nn.functional import interpolate
 from pathlib import Path
 import argparse
 import sys
+import numpy as np
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-
-from torch.nn.functional import interpolate
-import torch as th
-
-from diffmat import MaterialGraphTranslator as MGT, config_logger
-from diffmat.optim import Optimizer
-from diffmat.optim.metric import METRIC_DICT
-from diffmat.core.io import read_image
-from diffmat.core.util import FILTER_OFF
 
 
 def main():
@@ -25,8 +24,9 @@ def main():
                         'input image')
     parser = argparse.ArgumentParser(description=prog_description)
 
-    ## I/O path
-    parser.add_argument('input', metavar='FILE', help='Path to the input *.sbs file')
+    # I/O path
+    parser.add_argument('input', metavar='FILE',
+                        help='Path to the input *.sbs file')
     parser.add_argument('-i', '--input-dir-name', metavar='PATH', default='',
                         help='Input folder path that contains image samples')
     parser.add_argument('-f', '--input-file-name', metavar='NAME', default='params_0',
@@ -39,8 +39,9 @@ def main():
                         help='Specify an input image (e.g., a real photograph) in the place of '
                              'randomly sampled textures')
 
-    ## Graph related
-    parser.add_argument('-x', '--res', type=int, default=9, help='Output image resolution')
+    # Graph related
+    parser.add_argument('-x', '--res', type=int, default=9,
+                        help='Output image resolution')
     parser.add_argument('-l', '--logging-level', metavar='LEVEL', default='default',
                         choices=('none', 'quiet', 'default', 'verbose'), help='Logging level')
     parser.add_argument('-t', '--toolkit-path', metavar='PATH', default='',
@@ -58,7 +59,7 @@ def main():
                              '(FX-Map, Pixel Processor, and other generator) nodes with dummy '
                              'pass-through nodes')
 
-    ## Optimization
+    # Optimization
     parser.add_argument('-n', '--num-iters', type=int, default=2000,
                         help='Number of optimization iterations')
     parser.add_argument('-m', '--metric', default='vgg', choices=METRIC_DICT.keys(),
@@ -79,14 +80,18 @@ def main():
                         choices=['none', 'node', 'subgraph'],
                         help='Exclude generator-like nodes from optimization')
 
-    ## Other control
-    parser.add_argument('-c', '--cpu', action='store_true', help='Run the test on CPU only')
-    parser.add_argument('--exr', action='store_true', help='Load the input in exr format')
+    # Other control
+    parser.add_argument('-c', '--cpu', action='store_true',
+                        help='Run the test on CPU only')
+    parser.add_argument('--exr', action='store_true',
+                        help='Load the input in exr format')
     parser.add_argument('--stat-only', action='store_true',
                         help='Only show graph stats and do not run optimization')
-    parser.add_argument('--debug', action='store_true', help='Activate gradient debug mode')
+    parser.add_argument('--debug', action='store_true',
+                        help='Activate gradient debug mode')
 
     args = parser.parse_args()
+    print(args)
 
     # Activate gradient debugging mode
     th.autograd.set_detect_anomaly(args.debug)
@@ -107,8 +112,8 @@ def main():
     ext_input_dir = result_dir / 'external_input' / dir_name
 
     output_dir_name = args.output_dir_name or \
-                      (f'optim_{Path(args.input_image).stem}' if args.input_image else \
-                       f'optim_{args.input_file_name}')
+        (f'optim_{Path(args.input_image).stem}' if args.input_image else
+         f'optim_{args.input_file_name}')
     output_dir = result_dir / output_dir_name
 
     # Get the translated graph object
@@ -141,14 +146,23 @@ def main():
     img_format = 'exr' if args.exr else 'png'
 
     if args.input_image:
-        img_size = (1 << args.res, 1 << args.res)
-        target_img = read_image(args.input_image, device=device)[:3].unsqueeze(0)
-        target_img = interpolate(target_img, size=img_size, mode='bilinear', align_corners=False)
+        # print("Entered Input Image Target Statement")
+        # img_size = (1 << args.res, 1 << args.res)
+        # target_img = read_image(args.input_image, device=device)[
+        #     :3].unsqueeze(0)
+        # print(target_img)
+        # target_img = interpolate(
+        #     target_img, size=img_size, mode='bilinear', align_corners=False)
+        from PIL import Image
+        target_img = Image.open(args.input_image)
+        target_img = th.from_numpy(np.array(target_img)) / 255.0
+        target_img = target_img.permute(2, 0, 1).to(device)[:3].unsqueeze(0)
 
     # Read a sampled image from local file (synthetic target)
     else:
         input_dir = result_dir / (args.input_dir_name or 'sample_default')
-        img_file = input_dir / 'render' / f'{args.input_file_name}.{img_format}'
+        img_file = input_dir / 'render' / \
+            f'{args.input_file_name}.{img_format}'
         target_img = read_image(img_file, device=device).unsqueeze(0)
 
     # Run optimization to match the target image

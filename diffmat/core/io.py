@@ -32,6 +32,7 @@ def read_image(filename: PathLike, device: DeviceType = 'cpu') -> th.Tensor:
     """
     img_np: np.ndarray = imageio.imread(filename)
 
+
     # Convert the image array to float tensor according to its data type
     if img_np.dtype == np.uint8:
         img_np = img_np.astype(np.float32) / 255.0

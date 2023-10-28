@@ -24,6 +24,8 @@ logger = get_logger('diffmat.core')
 #          Noise and pattern generator nodes          #
 # --------------------------------------------------- #
 
+
+
 def crystal_2(res_h: int = 256, res_w: int = 256, scale: int = 1, disorder: float = 0.0,
               device: DeviceType = 'cpu') -> th.Tensor:
     """Noise generator: Crystal 2

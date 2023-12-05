@@ -117,10 +117,10 @@ def main():
     output_dir = result_dir / output_dir_name
 
     # Get the translated graph object
-    device = 'cpu' if args.cpu else 'cuda'
-    graph = translator.translate(
-        seed=args.graph_seed, normal_format=args.normal_format,
-        external_input_folder=ext_input_dir, device=device)
+    # 
+    device = 'cpu' if args.cpu else  'cuda'
+    graph = translator.translate(seed=args.graph_seed, normal_format=args.normal_format, external_input_folder=ext_input_dir, device=device)
+
     graph.compile()
 
     # Optionally read initial parameter values from an external file

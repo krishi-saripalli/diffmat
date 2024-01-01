@@ -47,6 +47,7 @@ def blend(img_fg: Optional[th.Tensor] = None, img_bg: Optional[th.Tensor] = None
     Returns:
         Tensor: Blended image.
     """
+    print("BLEND")
     # Get foreground and background channels
     channels_fg = img_fg.shape[1] if img_fg is not None else 0
     channels_bg = img_bg.shape[1] if img_bg is not None else 0
@@ -161,7 +162,7 @@ def blend(img_fg: Optional[th.Tensor] = None, img_bg: Optional[th.Tensor] = None
         img_out_crop[..., start_row:end_row, start_col:end_col] = \
             img_out[..., start_row:end_row, start_col:end_col]
 
-    return img_out_crop
+    return None
 
 
 @input_check(1)

@@ -1,6 +1,7 @@
 name: diffmat
 channels:
   - pytorch
+  - nvidia
   - defaults
 dependencies:
   - imageio>=2.9.0
@@ -9,9 +10,12 @@ dependencies:
   - pip>=21.2.4
   - python>=3.7
   - pytorch=1.11.0
+  - torchvision=0.12.0
+  - torchaudio  # Add the version if necessary
   - pyyaml>=6.0
   - scipy>=1.7.3
   - setuptools>=61.2.0
-  - torchvision=0.12.0
+  - cudatoolkit=10.2  # Assuming you want to install CUDA toolkit version 11.
   - pip:
     - taichi>=1.3.0
+

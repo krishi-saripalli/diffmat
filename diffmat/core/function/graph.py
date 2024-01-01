@@ -459,6 +459,8 @@ class FunctionGraph(BaseFunctionGraph[BFN]):
         Returns:
             int: Value category of the graph output.
         """
+        print('compile ')
+        0/0
         # Initialize the list of statements and the variable level memory
         statements: List[str] = []
         memory_exprs: Dict[str, str] = {node.name: f'x{i}' for i, node in enumerate(self.nodes)}

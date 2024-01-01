@@ -332,6 +332,7 @@ def load_node_config(node_type: str, mode: str = 'node') -> \
                                 f'{node_type}')
 
     # Load from the config file and inject internal node parameters info
+    
     config: NodeConfig = load_config(node_config_path)
     if mode in ('node', 'generator'):
         param_config = NODE_INTERAL_PARAMS['param'].copy()

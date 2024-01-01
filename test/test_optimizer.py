@@ -156,6 +156,7 @@ def main():
         from PIL import Image
         target_img = Image.open(args.input_image)
         target_img = th.from_numpy(np.array(target_img)) / 255.0
+        print(target_img.shape)
         target_img = target_img.permute(2, 0, 1).to(device)[:3].unsqueeze(0)
 
     # Read a sampled image from local file (synthetic target)

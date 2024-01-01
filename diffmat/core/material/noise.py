@@ -42,6 +42,8 @@ def crystal_2(res_h: int = 256, res_w: int = 256, scale: int = 1, disorder: floa
         # Sample random color, offset, size, and rotation variations
         color_rands, branch_offset_rands, pattern_offset_rands, size_rands, rotation_rands = \
             rands.split((1, 2, 2, 2, 1), dim=-1)
+        print("CRYSTAL_2!")
+
 
         # Calculate pattern offsets
         branch_offsets = branch_offsets + \
@@ -59,11 +61,13 @@ def crystal_2(res_h: int = 256, res_w: int = 256, scale: int = 1, disorder: floa
             'blending': [FXE.BLEND_ADD],
         }
 
+
         return job_arr, branch_offsets
 
     # Invoke the chain FX-map composer
     depths = (3, 6)
     rand_sizes = [8] * len(range(*depths))
+
 
     composer = Composer(
         int(math.log2(res_h)), 'half_bell', background_color=128/255, roughness=0.18,
@@ -414,6 +418,8 @@ def perlin_noise(res_h: int = 256, res_w: int = 256, scale: int = 32, disorder: 
     # Final composition
     img_out = ((img_bg - img_fg + 1) * 0.5).clamp(0.0, 1.0)
     img_out = levels(img_out, in_low=0.25, in_high=0.75)
+
+ 
 
     return img_out
 

@@ -96,10 +96,11 @@ class MaterialGraph(BaseGraph[BaseMaterialNode]):
 
         for node in self.nodes:
             op_name = node.name
+            print(op_name)
             op_args = [get_variable_name(*val) if val else None for val in node.inputs.values()]
             op_result = [get_variable_name(op_name, key) for key in node.outputs]
             self.program.append({'op': op_name, 'args': op_args, 'result': op_result})
-
+        
         # Print the program
         program_str = [f'Compiled material graph program ({len(self.program)} nodes):']
         for inst in self.program:
